@@ -2,7 +2,6 @@ package com.atilsamancioglu.retrofitkotlin.service
 
 import com.atilsamancioglu.retrofitkotlin.model.CryptoModel
 import io.reactivex.Observable
-import retrofit2.Call
 import retrofit2.http.GET
 
 interface CryptoAPI {
