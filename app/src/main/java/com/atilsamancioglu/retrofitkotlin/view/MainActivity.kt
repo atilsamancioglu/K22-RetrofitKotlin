@@ -1,21 +1,17 @@
 package com.atilsamancioglu.retrofitkotlin.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.atilsamancioglu.retrofitkotlin.R
 import com.atilsamancioglu.retrofitkotlin.adapter.RecyclerViewAdapter
+import com.atilsamancioglu.retrofitkotlin.databinding.ActivityMainBinding
 import com.atilsamancioglu.retrofitkotlin.model.CryptoModel
 import com.atilsamancioglu.retrofitkotlin.service.CryptoAPI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,15 +20,18 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
 
     private val BASE_URL = "https://api.nomics.com/v1/"
     private var cryptoModels: ArrayList<CryptoModel>? = null
-    private var recyclerViewAdapter : RecyclerViewAdapter? = null
+    private var recyclerViewAdapter: RecyclerViewAdapter? = null
 
     //Disposable
     private var compositeDisposable: CompositeDisposable? = null
 
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         //https://raw.githubusercontent.com/atilsamancioglu/K21-JSONDataSet/master/crypto.json
         //https://api.nomics.com/v1/prices?key=2187154b76945f2373394aa34f7dc98a
@@ -42,8 +41,8 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
 
         //RecyclerView
 
-        val layoutManager : RecyclerView.LayoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
 
         loadData()
 
@@ -58,10 +57,12 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
             .build().create(CryptoAPI::class.java)
 
 
-        compositeDisposable?.add(retrofit.getData()
+        compositeDisposable?.add(
+            retrofit.getData()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleResponse))
+                .subscribe(this::handleResponse)
+        )
 
 
         /*
@@ -111,17 +112,17 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
 
     }
 
-    private fun handleResponse(cryptoList : List<CryptoModel>){
+    private fun handleResponse(cryptoList: List<CryptoModel>) {
         cryptoModels = ArrayList(cryptoList)
 
         cryptoModels?.let {
-            recyclerViewAdapter = RecyclerViewAdapter(it,this@MainActivity)
-            recyclerView.adapter = recyclerViewAdapter
+            recyclerViewAdapter = RecyclerViewAdapter(it, this@MainActivity)
+            binding.recyclerView.adapter = recyclerViewAdapter
         }
     }
 
     override fun onItemClick(cryptoModel: CryptoModel) {
-        Toast.makeText(this,"Clicked : ${cryptoModel.currency}",Toast.LENGTH_LONG ).show()
+        Toast.makeText(this, "Clicked : ${cryptoModel.currency}", Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroy() {
