@@ -15,7 +15,7 @@ interface CryptoAPI {
     //https://api.nomics.com/v1/
     // prices?key=2187154b76945f2373394aa34f7dc98a
 
-    @GET("prices?key=2187154b76945f2373394aa34f7dc98a")
+    @GET("atilsamancioglu/K21-JSONDataSet/master/crypto.json")
     fun getData(): Observable<List<CryptoModel>>
 
     //fun getData(): Call<List<CryptoModel>>

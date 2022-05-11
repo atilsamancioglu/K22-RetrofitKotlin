@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.atilsamancioglu.retrofitkotlin.R
 import com.atilsamancioglu.retrofitkotlin.adapter.RecyclerViewAdapter
+import com.atilsamancioglu.retrofitkotlin.databinding.ActivityMainBinding
 import com.atilsamancioglu.retrofitkotlin.model.CryptoModel
 import com.atilsamancioglu.retrofitkotlin.service.CryptoAPI
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,8 +21,9 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
+    private lateinit var binding: ActivityMainBinding
 
-    private val BASE_URL = "https://api.nomics.com/v1/"
+    private val BASE_URL = "https://raw.githubusercontent.com/"
     private var cryptoModels: ArrayList<CryptoModel>? = null
     private var recyclerViewAdapter : RecyclerViewAdapter? = null
 
@@ -32,7 +33,10 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
 
         //https://raw.githubusercontent.com/atilsamancioglu/K21-JSONDataSet/master/crypto.json
         //https://api.nomics.com/v1/prices?key=2187154b76945f2373394aa34f7dc98a
@@ -43,7 +47,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
         //RecyclerView
 
         val layoutManager : RecyclerView.LayoutManager = LinearLayoutManager(this)
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         loadData()
 
@@ -116,7 +120,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.Listener {
 
         cryptoModels?.let {
             recyclerViewAdapter = RecyclerViewAdapter(it,this@MainActivity)
-            recyclerView.adapter = recyclerViewAdapter
+            binding.recyclerView.adapter = recyclerViewAdapter
         }
     }
 
